@@ -5,6 +5,10 @@
 // The goal is to devide the array into two groups, or rather, return the index that makes it possible
 // The pivot will come to the center of the vector, with unsorted on the left and right
 //
+
+use std::io;
+use std::io::prelude::*;
+
 fn partition(left: isize, right: isize, values: &mut Vec<isize>) -> isize {
     /*let index_smaller = left;
     let pivot = values[left]
@@ -43,7 +47,6 @@ fn partition(left: isize, right: isize, values: &mut Vec<isize>) -> isize {
 
     // j = the current index
     for j in left..right {
-
         if values[j as usize] < pivot {
             i += 1;
 
@@ -59,7 +62,7 @@ fn partition(left: isize, right: isize, values: &mut Vec<isize>) -> isize {
     values[(i + 1) as usize] = values[right as usize];
     values[right as usize] = temp_old_at_new_pivot_position;
 
-    // return the index of the pivot 
+    // return the index of the pivot
     return i + 1;
 }
 
@@ -88,23 +91,46 @@ fn main() {
 
     // let mut values = vec![-2, 3, -1, 5, 4, -3, 0];
 
-    let mut values = vec![1, 3, 5, 2, 7, 10, 4];
+    // let mut values = vec![1, 3, 5, 2, 7, 10, 4];
 
     // right is length -1 if indexing starts at zero
-    quick_sort(0, (values.len() - 1) as isize, &mut values);
 
-    println!("sorted: {:?}", values);
+    // quick_sort(0, (values.len() - 1) as isize, &mut values);
+
+    // println!("sorted: {:?}", values);
+
+    for line in io::stdin().lock().lines().map(|line| line.unwrap()) {
+        // eprintln!("{:?}", line);
+
+        let mut values: Vec<isize> = line // PRE ALLOCATE!
+            .split_whitespace()
+            .skip(1) // <-- SKIP LENGTH PARAM
+            .map(|_value| _value.parse::<isize>().unwrap())
+            .collect();
+
+        // eprintln!("{:?}", values);
+
+        quick_sort(0, (values.len() - 1) as isize, &mut values);
+
+        let formatted = values.iter().map(|x| x.to_string() + " ").collect::<String>();
+
+        println!("{}", formatted.trim());
+
+        // println!("{:?}", values.join(" "));
+    }
 
     // Input
-    /*let mut line = String::with_capacity(500_000); // FIX ME!
-    io::stdin().lock().read_to_string(&mut line);
+    // let mut line = String::with_capacity(500_000); // FIX ME!
 
-    let mut values: Vec<isize> = line // PRE ALLOCATE!
-        .split_whitespace()
-        .skip(1) // <-- SKIP LENGTH PARAM
-        .map(|_value| _value.parse::<isize>().unwrap())
-        .collect();
+    // io::stdin().lock().read_to_string(&mut line);
 
-    let length = values.len() as isize; // O(1) OPERATION
-     */
+    /* let mut values: Vec<isize> = line // PRE ALLOCATE!
+    .split_whitespace()
+    .skip(1) // <-- SKIP LENGTH PARAM
+    .map(|_value| _value.parse::<isize>().unwrap())
+    .collect(); */
+
+    // println!("{:?}", values);
+
+    // println!("{:?}", values);
 }
