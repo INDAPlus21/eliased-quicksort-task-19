@@ -4,42 +4,12 @@
 // Only the vector between left and right will be partitioned
 // The goal is to devide the array into two groups, or rather, return the index that makes it possible
 // The pivot will come to the center of the vector, with unsorted on the left and right
-//
 
 use std::io;
 use std::io::prelude::*;
+use std::mem::swap; 
 
 fn partition(left: isize, right: isize, values: &mut Vec<isize>) -> isize {
-    /*let index_smaller = left;
-    let pivot = values[left]
-
-    while left < right {
-        while left < values.len() && values[left] <= pivot {
-            left += 1;
-        }
-
-        while values[right] > pivot {
-            right -= 1;
-        }
-
-        if left < right {
-            // Swaps the values
-            temp_values_start = values[left];
-            values[left] = values[right];
-            values[right] = temp_values_start;
-        }
-    }
-
-    temp_pivot_index = values[index_smaller];
-    values[index_smaller] = values[right];
-    values[right] = temp_pivot_index;
-
-    return right*/
-
-    /*for i = low; i < right - 1; i++ {
-
-    }*/
-
     let pivot = values[right as usize];
 
     // i = index of smaller element
@@ -51,16 +21,19 @@ fn partition(left: isize, right: isize, values: &mut Vec<isize>) -> isize {
             i += 1;
 
             // Swaps the left and right values
-            let temp_left = values[i as usize];
+            values.swap(i as usize, j as usize); 
+            /* let temp_left = values[i as usize];
             values[i as usize] = values[j as usize];
-            values[j as usize] = temp_left;
+            values[j as usize] = temp_left; */
         }
     }
 
     // Swap the previous pivot (which was the rightmost element) and its found position (in the middle)
-    let temp_old_at_new_pivot_position = values[(i + 1) as usize];
+    values.swap((i + 1) as usize, right as usize); 
+    
+    /* let temp_old_at_new_pivot_position = values[(i + 1) as usize];
     values[(i + 1) as usize] = values[right as usize];
-    values[right as usize] = temp_old_at_new_pivot_position;
+    values[right as usize] = temp_old_at_new_pivot_position; */
 
     // return the index of the pivot
     return i + 1;
@@ -74,6 +47,7 @@ fn partition(left: isize, right: isize, values: &mut Vec<isize>) -> isize {
 // And it's recursive, so it returns upwards
 // This implementation picks the first element
 // If it would be greater than, do nothing because it's already sorted
+// right is length -1 if indexing starts at zero
 fn quick_sort(left: isize, right: isize, values: &mut Vec<isize>) {
     if left < right {
         let pivot_index = partition(left, right, values);
@@ -93,22 +67,13 @@ fn main() {
 
     // let mut values = vec![1, 3, 5, 2, 7, 10, 4];
 
-    // right is length -1 if indexing starts at zero
-
-    // quick_sort(0, (values.len() - 1) as isize, &mut values);
-
-    // println!("sorted: {:?}", values);
-
-    for line in io::stdin().lock().lines().map(|line| line.unwrap()) {
-        // eprintln!("{:?}", line);
+    /* for line in io::stdin().lock().lines().map(|line| line.unwrap()) {
 
         let mut values: Vec<isize> = line // PRE ALLOCATE!
             .split_whitespace()
             .skip(1) // <-- SKIP LENGTH PARAM
             .map(|_value| _value.parse::<isize>().unwrap())
             .collect();
-
-        // eprintln!("{:?}", values);
 
         quick_sort(0, (values.len() - 1) as isize, &mut values);
 
@@ -117,20 +82,22 @@ fn main() {
         println!("{}", formatted.trim());
 
         // println!("{:?}", values.join(" "));
-    }
+    } */
 
     // Input
-    // let mut line = String::with_capacity(500_000); // FIX ME!
+    let mut line = String::with_capacity(500_000); // FIX ME!
 
-    // io::stdin().lock().read_to_string(&mut line);
+    io::stdin().lock().read_line(&mut line); //.read_to_string(&mut line);
 
-    /* let mut values: Vec<isize> = line // PRE ALLOCATE!
+    let mut values: Vec<isize> = line // PRE ALLOCATE!
     .split_whitespace()
     .skip(1) // <-- SKIP LENGTH PARAM
     .map(|_value| _value.parse::<isize>().unwrap())
-    .collect(); */
+    .collect();
 
-    // println!("{:?}", values);
+    quick_sort(0, (values.len() - 1) as isize, &mut values);
 
-    // println!("{:?}", values);
+    let formatted = values.iter().map(|x| x.to_string() + " ").collect::<String>();
+
+    println!("{}", formatted.trim());
 }
