@@ -54,7 +54,6 @@ fn partition(left: usize, right: usize, values: &mut [i32]) -> usize {
     // j = the current index
     for j in left..right {
         if values[j] < pivot {
-
             // swap the smaller and larger value
             values.swap(i, j);
 
@@ -66,24 +65,80 @@ fn partition(left: usize, right: usize, values: &mut [i32]) -> usize {
     values.swap(i, right);
 
     // return the index of the pivot
-    return i // + 1;
+    return i; // + 1;
 }
 
 fn insertion_sort(left: i32, right: i32, values: &mut [i32]) {
-    // rotate through values 
-    for i in left+1..right+1 {
-        let key = values[i as usize]; 
-        let mut j = i - 1; 
+    // rotate through values
+    for i in left + 1..right + 1 {
+        let key = values[i as usize];
+        let mut j = i - 1;
 
-        // move all greater one step to the right 
+        // move all greater one step to the right
         while j >= left && values[j as usize] > key {
-            // values.swap(j as usize + 1, j as usize); 
-            values[(j + 1) as usize] = values[j as usize]; 
-            j -= 1; 
+            // values.swap(j as usize + 1, j as usize);
+            values[(j + 1) as usize] = values[j as usize];
+            j -= 1;
         }
 
-        // and move the smaller element back 
-        values[(j + 1) as usize] = key; 
+        // and move the smaller element back
+        values[(j + 1) as usize] = key;
+    }
+}
+
+/* let pivot = arr[low];
+let i = low - 1, j = high + 1;
+
+while (true) {
+    // Find leftmost element greater
+    // than or equal to pivot
+    do {
+        i++;
+    } while (arr[i] < pivot);
+
+    // Find rightmost element smaller
+    // than or equal to pivot
+    do {
+        j--;
+    } while (arr[j] > pivot);
+
+    // If two pointers met.
+    if (i >= j)
+        return j;
+    let temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+    // swap(arr[i], arr[j]);
+} */
+
+// Should go quicker because it more often splits from the middle element
+fn hoares_partition(left: usize, right: usize, values: &mut [i32]) -> usize {
+    let pivot = values[(left + right) / 2];
+
+    let mut i: isize = left as isize - 1;
+    let mut j = right + 1;
+
+    // you're doing this multiple times, so...
+    loop {
+        // find smallest element
+        // Rust's do while 
+        while {
+            i += 1;
+            values[i as usize] < pivot
+        } {}
+
+        // find largest element
+        while {
+            j -= 1;
+            values[j] > pivot
+        } {}
+
+        // if equal, return index
+        if i >= j as isize {
+            return j;
+        }
+
+        values.swap(i as usize, j);
     }
 }
 
@@ -92,18 +147,18 @@ Choosing a better pivot is pivotal, but this implementation picks the last eleme
 fn quick_sort(left: usize, right: usize, values: &mut [i32]) {
     // if it's greater than, do nothing because it's already sorted
     if left < right {
-        // if the subvector is short enough, do insertion sort instead 
+        // if the subvector is short enough, do insertion sort instead
         /*if right - left < 100 {
             insertion_sort(left, right, values);
         } else {*/
-            let pivot_index = partition(left, right, values);
+        let pivot_index = hoares_partition(left, right, values);
 
-            // Sort the left vector (all values lesser than the pivot)
-            // right is length -1 if indexing starts at zero
-            quick_sort(left, pivot_index.saturating_sub(1), values);
-    
-            // Sort the right vector (all values greater than the pivot.
-            quick_sort(pivot_index + 1, right, values);    
+        // Sort the left vector (all values lesser than the pivot)
+        // right is length -1 if indexing starts at zero
+        quick_sort(left, pivot_index, values);
+
+        // Sort the right vector (all values greater than the pivot.
+        quick_sort(pivot_index + 1, right, values);
         // }
     }
 }
@@ -154,7 +209,7 @@ fn main() {
     println!("{}", formatted.trim()); */
 
     // Input
-    let mut line = String::with_capacity(200_000); // FIX ME!
+    /* let mut line = String::with_capacity(200_000); // FIX ME!
 
     io::stdin().lock().read_line(&mut line); //.read_to_string(&mut line);
 
@@ -168,15 +223,15 @@ fn main() {
 
     for elem in values {
         print!("{} ", elem);
-    }
+    } */
 
-    // let mut values = [1, 5, 2, 6, 3, 10];
+    let mut values = [1, 5, 2, 6, 3, 10];
 
-    /* let mut values = [6, 4];
+    // let mut values = [6, 4];
 
-    insertion_sort(0, (values.len() - 1) as i32, &mut values);
+    quick_sort(0, values.len() - 1, &mut values[..]);
 
     for elem in values {
         print!("{} ", elem);
-    } */
+    }
 }
