@@ -45,27 +45,28 @@ fn quick_sort(left: i32, right: i32, values: &mut Vec<i32>) {
     }
 } */
 
-fn partition(left: i32, right: i32, values: &mut [i32]) -> i32 {
-    let pivot = values[right as usize];
+fn partition(left: usize, right: usize, values: &mut [i32]) -> usize {
+    let pivot = values[right];
 
     // i = index of smaller element (memory)
-    let mut i = left - 1;
+    let mut i = left;
 
     // j = the current index
     for j in left..right {
-        if values[j as usize] < pivot {
-            i += 1;
+        if values[j] < pivot {
 
             // swap the smaller and larger value
-            values.swap(i as usize, j as usize);
+            values.swap(i, j);
+
+            i += 1;
         }
     }
 
     // swap pivot element (rightmost element) and its found position (sandwiched in the middle)
-    values.swap((i + 1) as usize, right as usize);
+    values.swap(i, right);
 
     // return the index of the pivot
-    return i + 1;
+    return i // + 1;
 }
 
 fn insertion_sort(left: i32, right: i32, values: &mut [i32]) {
@@ -84,26 +85,26 @@ fn insertion_sort(left: i32, right: i32, values: &mut [i32]) {
         // and move the smaller element back 
         values[(j + 1) as usize] = key; 
     }
- }
+}
 
 /* Recursive subroutine that chops the vector at the pivot
 Choosing a better pivot is pivotal, but this implementation picks the last element */
-fn quick_sort(left: i32, right: i32, values: &mut [i32]) {
+fn quick_sort(left: usize, right: usize, values: &mut [i32]) {
     // if it's greater than, do nothing because it's already sorted
     if left < right {
         // if the subvector is short enough, do insertion sort instead 
-        if right - left < 100 {
+        /*if right - left < 100 {
             insertion_sort(left, right, values);
-        } else {
+        } else {*/
             let pivot_index = partition(left, right, values);
 
             // Sort the left vector (all values lesser than the pivot)
             // right is length -1 if indexing starts at zero
-            quick_sort(left, pivot_index - 1, values);
+            quick_sort(left, pivot_index.saturating_sub(1), values);
     
             // Sort the right vector (all values greater than the pivot.
             quick_sort(pivot_index + 1, right, values);    
-        }
+        // }
     }
 }
 
@@ -163,7 +164,7 @@ fn main() {
         .map(|_value| _value.parse::<i32>().unwrap())
         .collect();
 
-    quick_sort(0, (values.len() - 1) as i32, &mut values[..]);
+    quick_sort(0, values.len() - 1, &mut values[..]);
 
     for elem in values {
         print!("{} ", elem);
