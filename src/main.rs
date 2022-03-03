@@ -2,6 +2,7 @@ use std::io;
 use std::io::prelude::*;
 use std::fs::File;
 use std::fs;
+use std::slice; 
 
 // use rand::Rng;
 
@@ -55,7 +56,7 @@ fn insertion_sort(left: usize, right: usize, values: &mut [i32]) {
 // Should go quicker because it more often splits from the middle element
 fn hoares_partition(left: usize, right: usize, values: &mut [i32]) -> usize {
     // let pivot = values[(left + right) / 2];
-    let pivot = pick_pivot(left, right, values); 
+    let pivot = pick_pivot(left, right, values); // values[(left + right) / 2];
 
     let mut i: isize = left as isize - 1;
     let mut j = right + 1;
@@ -115,6 +116,8 @@ fn pick_pivot(left: usize, right: usize, values: &mut [i32]) -> i32 {
         return rand::thread_rng().gen_range(left..right) as i32;
     } */
 
+    return median(values[left], values[right], values[(left + right) / 2])
+
 
     /* let random = || -> i32 {
         return rand::thread_rng().gen_range(left..right) as i32;
@@ -122,18 +125,18 @@ fn pick_pivot(left: usize, right: usize, values: &mut [i32]) -> i32 {
 
     // let random = ((random * 7621) + 1) % 32768;
 
-    let mut file = File::open("/dev/urandom");
+    // let mut file = File::open("/dev/urandom");
 
-    let mut random = [0];  
+    // let mut random = [0];  
 
-    let mut random = fs::read("/dev/urandom"); 
+    // let mut random = fs::read("/dev/urandom"); 
 
     // file.fs::read(&mut random); 
 
     // dbg!(random); 
-    println!("{:?}", random);
+    // println!("{:?}", random);
 
-    return 0 // random[0] as i32; 
+    // return 0 // random[0] as i32; 
 
     // let median = median(values[left], values[right], values[(left+right)/2]); 
 
@@ -246,9 +249,29 @@ fn main() {
 
     quick_sort(0, length, &mut values[..]);
 
-    for elem in values {
+    let formatted = values.iter().map(|x| x.to_string() + " ").collect::<String>();
+
+    println!("{}", formatted);
+
+    /* let mut line = String::with_capacity(200_000); // FIX ME!
+
+    io::stdin().lock().read_line(&mut line); //.read_to_string(&mut line);
+
+    let mut values: Vec<i32> = line // PRE ALLOCATE!
+        .split_whitespace()
+        .skip(1)
+        .map(|_value| _value.parse::<i32>().unwrap())
+        .collect();
+
+    values.sort_unstable();
+
+    let formatted = values.iter().map(|x| x.to_string() + " ").collect::<String>();
+
+    println!("{}", formatted.trim());  */
+
+    /* for elem in values {
         print!("{} ", elem);
-    }
+    } */
 
     // https://www.minimalrust.com/an-adventure-in-simd-2/
     // https://elib.dlr.de/145402/1/thesis_col.pdf

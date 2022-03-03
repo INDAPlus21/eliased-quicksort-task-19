@@ -1,6 +1,6 @@
 #include <stdio.h>
 // #include <stdlib.h>
-#define true 1
+// #define true 1
 
 /* Returns index of the pivot in the modified vector, with unsorted greater elements to the right, lesser to the left
 Worst case is greatest/least O(n^2), n-1 comparisons, best case median */
@@ -94,7 +94,7 @@ int pick_pivot(int left, int right, int array[])
     return median(candidate1, candidate2, candidate3);
 }*/
 
-int insertion_sort(int left, int right, int array[])
+/* int insertion_sort(int left, int right, int array[])
 {
     for (int i = left + 1; i < right + 1; i++)
     {
@@ -109,9 +109,9 @@ int insertion_sort(int left, int right, int array[])
 
         array[j + 1] = key;
     }
-}
+} */
 
-int hoares_partition(int left, int right, int array[])
+/* int hoares_partition(int left, int right, int array[])
 {
     int pivot = array[(left + right) / 2]; // pick_pivot(left, right, array);
 
@@ -136,12 +136,11 @@ int hoares_partition(int left, int right, int array[])
         }
 
         // swap
-        // swap(array[i], array[j]);
         int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
-}
+} */
 
 /* Recursive subroutine that chops the vector at the pivot
 Choosing a better pivot is pivotal, but this implementation picks the last element */
@@ -153,36 +152,66 @@ void quick_sort(int left, int right, int array[])
     {
         if (right - left < 24)
         {
-            insertion_sort(left, right, array);
+            // insertion sort inline
+            for (int i = left + 1; i < right + 1; i++)
+            {
+                int key = array[i];
+                int j = i - 1;
+
+                while (j >= left && array[j] > key)
+                {
+                    array[j + 1] = array[j];
+                    j--;
+                }
+
+                array[j + 1] = key;
+            }
         }
         else
-        {
-            int pivot_index = hoares_partition(left, right, array);
+        {            
+            // hoares partition inline 
+            int pivot = array[(left + right) / 2]; // pick_pivot(left, right, array);
 
-            // An optimization is to, if left is smaller, handle right iteratively
+            int i = left - 1;
+            int j = right + 1;
+
+            while (1)
+            {
+                do
+                {
+                    i += 1;
+                } while (array[i] < pivot);
+
+                do
+                {
+                    j -= 1;
+                } while (array[j] > pivot);
+
+                if (i >= j)
+                {
+                    break; 
+                }
+
+                // swap
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
 
             // Sort the left vector (all values lesser than the pivot)
             // right is length -1 if indexing starts at zero
-            quick_sort(left, pivot_index, array);
+            quick_sort(left, j, array);
 
             // Sort the right vector (all values greater than the pivot.
-            quick_sort(pivot_index + 1, right, array);
+            quick_sort(j + 1, right, array);
         }
     }
 }
 
-
-// unsigned was slower 
+// inlining didn't have any effect 
 int main()
 {
     int num_elements;
-
-    // read input to array
-    // cin >> num_elements;
-
-    // int debug_array[] = {1, 25, 2, 3, 5, 10};
-
-    // quick_sort(0, 5, debug_array);
 
     scanf("%d", &num_elements);
 
@@ -196,24 +225,6 @@ int main()
     // num_elements - 1 because index
     quick_sort(0, num_elements - 1, array);
 
-    // printf("%s", array);
-
-    /* char str[num_elements*100];
-    int i = 0;
-    int index = 0;
-    for (i = 0; i < num_elements; i++)
-        index += sprintf(&str[index], "%d ", array[i]);
-
-    printf("%s", str); // outputs so you can see it */ 
-
-    /* char buf[num_elements*12];
-    for (int i = 0; i < num_elements; i++)
-    {
-        snprintf(buf, 12, "%d", array[i]); // puts string into buffer
-    }
-
-    printf("%s\n", buf); // outputs so you can see it */
-
     // print sorted array
     for (int i = 0; i < num_elements; i++)
     {
@@ -222,13 +233,4 @@ int main()
     }
 
     return 0;
-
-    /* getline(std::cin, line);
-    istringstream stream(line);
-    while (stream >> number)
-        array.push_back(number);
-
-    size_t length = sizeof array / sizeof array[0];
-
-    quick_sort(0, length, array); */
 }
